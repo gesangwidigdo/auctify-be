@@ -7,6 +7,7 @@ import (
 	"github.com/gesangwidigdo/auctify-be/dto"
 	"github.com/gesangwidigdo/auctify-be/interfaces"
 	"github.com/gesangwidigdo/auctify-be/model"
+	"github.com/gesangwidigdo/auctify-be/utils"
 )
 
 type authService struct {
@@ -26,11 +27,15 @@ func (a *authService) Login(request dto.UserLoginRequest) (dto.UserLoginResponse
 
 // Register implements interfaces.AuthService.
 func (a *authService) Register(request dto.UserRegisterRequest) (dto.UserRegisterResponse, error) {
+	hashedPassword, err := utils.HashPassword(request.Password)
+	if err != nil {
+		return dto.UserRegisterResponse{}, err
+	}
 	newUser := model.User{
 		Name:     request.Name,
 		Email:    request.Email,
 		Username: request.Username,
-		Password: request.Password,
+		Password: hashedPassword,
 		Role:     "user",
 		Address:  request.Address,
 	}
