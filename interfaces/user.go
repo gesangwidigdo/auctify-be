@@ -8,7 +8,7 @@ import (
 
 type UserRepository interface {
 	Register(request model.User) (model.User, error)
-	Login(request model.User) (model.User, error)
+	GetByUsername(username string) (model.User, error)
 	Update(id uint, request model.User) (model.User, error)
 	Delete(id uint) (error)
 	List() ([]model.User, error)

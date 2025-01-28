@@ -19,7 +19,21 @@ func NewAuthController(authService interfaces.AuthService) interfaces.AuthContro
 
 // Login implements interfaces.AuthController.
 func (a *authController) Login(ctx *gin.Context) {
-	panic("unimplemented")
+	var loginAttempt dto.UserLoginRequest
+	if err := ctx.ShouldBindJSON(&loginAttempt); err != nil {
+		utils.FailResponse(ctx, 400, err.Error())
+		return
+	}
+
+	loginResponse, err := a.authService.Login(loginAttempt)
+	if err != nil {
+		utils.FailResponse(ctx, 401, err.Error())
+		return
+	}
+
+	ctx.SetCookie("token", loginResponse.Token, 3600*24, "/", "localhost", false, true)
+
+	utils.SuccessResponse(ctx, 200, "login success")
 }
 
 // Register implements interfaces.AuthController.

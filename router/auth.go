@@ -15,5 +15,5 @@ func AuthRoute(r *gin.RouterGroup, db *gorm.DB) {
 	var authController interfaces.AuthController = controller.NewAuthController(authService)
 
 	r.POST("/register", authController.Register)
-	// r.POST("/login", nil)
+	r.POST("/login", authController.Login)
 }

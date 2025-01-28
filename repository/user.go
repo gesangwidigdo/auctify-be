@@ -17,8 +17,12 @@ func NewUserRepository(db *gorm.DB) interfaces.UserRepository {
 }
 
 // Login implements interfaces.UserRepository.
-func (u *userRepository) Login(request model.User) (model.User, error) {
-	panic("unimplemented")
+func (u *userRepository) GetByUsername(username string) (model.User, error) {
+	var user model.User
+	if err := u.db.Raw("SELECT id, username, password FROM users WHERE username = ?", username).Take(&user).Error; err != nil {
+		return model.User{}, err
+	}
+	return user, nil
 }
 
 // Register implements interfaces.UserRepository.

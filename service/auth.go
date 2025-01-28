@@ -22,7 +22,26 @@ func NewAuthService(userRepository interfaces.UserRepository) interfaces.AuthSer
 
 // Login implements interfaces.AuthService.
 func (a *authService) Login(request dto.UserLoginRequest) (dto.UserLoginResponse, error) {
-	panic("unimplemented")
+	userFound, err := a.userRepository.GetByUsername(request.Username)
+	if err != nil {
+		return dto.UserLoginResponse{}, errors.New("Username does not exist, please register first")
+	}
+
+	println(userFound.Password)
+	println(request.Password)
+
+	if !utils.CheckPasswordHash(userFound.Password, request.Password) {
+		return dto.UserLoginResponse{}, errors.New("Invalid password")
+	}
+
+	tokenString, err := utils.CreateToken(userFound.Username)
+	if err != nil {
+		return dto.UserLoginResponse{}, err
+	}
+	return dto.UserLoginResponse{
+		Username: userFound.Username,
+		Token:    tokenString,
+	}, nil
 }
 
 // Register implements interfaces.AuthService.
