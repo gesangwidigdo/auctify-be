@@ -1,6 +1,9 @@
 package service
 
 import (
+	"errors"
+	"strings"
+
 	"github.com/gesangwidigdo/auctify-be/dto"
 	"github.com/gesangwidigdo/auctify-be/interfaces"
 	"github.com/gesangwidigdo/auctify-be/model"
@@ -33,6 +36,13 @@ func (a *authService) Register(request dto.UserRegisterRequest) (dto.UserRegiste
 	}
 	user, err := a.userRepository.Register(newUser)
 	if err != nil {
+		if strings.Contains(strings.ToLower(err.Error()), "duplicate entry") {
+			if strings.Contains(err.Error(), "email") {
+				return dto.UserRegisterResponse{}, errors.New("email already registered")
+			} else if strings.Contains(err.Error(), "uni_users_username") {
+				return dto.UserRegisterResponse{}, errors.New("username already registered")
+			}
+		}
 		return dto.UserRegisterResponse{}, err
 	}
 	return dto.UserRegisterResponse{
