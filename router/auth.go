@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gesangwidigdo/auctify-be/controller"
 	"github.com/gesangwidigdo/auctify-be/interfaces"
+	"github.com/gesangwidigdo/auctify-be/middleware"
 	"github.com/gesangwidigdo/auctify-be/repository"
 	"github.com/gesangwidigdo/auctify-be/service"
 	"github.com/gin-gonic/gin"
@@ -16,4 +17,5 @@ func AuthRoute(r *gin.RouterGroup, db *gorm.DB) {
 
 	r.POST("/register", authController.Register)
 	r.POST("/login", authController.Login)
+	r.POST("/logout", middleware.AuthMiddleware, authController.Logout)
 }

@@ -17,6 +17,23 @@ func NewAuthController(authService interfaces.AuthService) interfaces.AuthContro
 	}
 }
 
+// Register implements interfaces.AuthController.
+func (a *authController) Register(ctx *gin.Context) {
+	var userRequest dto.UserRegisterRequest
+	if err := ctx.ShouldBindJSON(&userRequest); err != nil {
+		utils.FailResponse(ctx, 400, err.Error())
+		return
+	}
+
+	userResponse, err := a.authService.Register(userRequest)
+	if err != nil {
+		utils.FailResponse(ctx, 500, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, 201, userResponse)
+}
+
 // Login implements interfaces.AuthController.
 func (a *authController) Login(ctx *gin.Context) {
 	var loginAttempt dto.UserLoginRequest
@@ -36,19 +53,8 @@ func (a *authController) Login(ctx *gin.Context) {
 	utils.SuccessResponse(ctx, 200, "login success")
 }
 
-// Register implements interfaces.AuthController.
-func (a *authController) Register(ctx *gin.Context) {
-	var userRequest dto.UserRegisterRequest
-	if err := ctx.ShouldBindJSON(&userRequest); err != nil {
-		utils.FailResponse(ctx, 400, err.Error())
-		return
-	}
-
-	userResponse, err := a.authService.Register(userRequest)
-	if err != nil {
-		utils.FailResponse(ctx, 500, err.Error())
-		return
-	}
-
-	utils.SuccessResponse(ctx, 201, userResponse)
+// Logout implements interfaces.AuthController.
+func (a *authController) Logout(ctx *gin.Context) {
+	ctx.SetCookie("token", "", -1, "/", "localhost", false, true)
+	utils.SuccessResponse(ctx, 200, "logout success")
 }

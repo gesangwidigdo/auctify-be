@@ -8,6 +8,7 @@ import (
 type AuthController interface {
 	Register(ctx *gin.Context)
 	Login(ctx *gin.Context)
+	Logout(ctx *gin.Context)
 }
 
 type AuthService interface {
