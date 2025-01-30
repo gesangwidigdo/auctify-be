@@ -34,7 +34,7 @@ func (a *authService) Login(request dto.UserLoginRequest) (dto.UserLoginResponse
 		return dto.UserLoginResponse{}, errors.New("Invalid password")
 	}
 
-	tokenString, err := utils.CreateToken(userFound.Username)
+	tokenString, err := utils.CreateToken(userFound)
 	if err != nil {
 		return dto.UserLoginResponse{}, err
 	}
