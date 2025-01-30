@@ -5,12 +5,14 @@ import (
 	"os"
 	"time"
 
+	"github.com/gesangwidigdo/auctify-be/model"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func CreateToken(username string) (string, error) {
+func CreateToken(user model.User) (string, error) {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": username,
+		"id": user.ID,
+		"sub": user.Username,
 		"iss": "auctify",
 		"exp": time.Now().Add(time.Hour * 72).Unix(),
 		"iat": time.Now().Unix(),
