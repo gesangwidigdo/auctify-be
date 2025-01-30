@@ -23,8 +23,8 @@ type UserService interface {
 }
 
 type UserController interface {
-	Update(*gin.Context) 
-	Delete(*gin.Context)
-	List(*gin.Context)
-	Detail(*gin.Context)
+	Update(ctx *gin.Context) 
+	Delete(ctx *gin.Context)
+	List(ctx *gin.Context)
+	Detail(ctx *gin.Context)
 }
