@@ -33,6 +33,7 @@ func AuthMiddleware(c *gin.Context) {
 		}
 
 		c.Set("username", claims["sub"])
+		c.Set("id", claims["id"])
 		c.Next()
 	} else {
 		utils.FailResponse(c, http.StatusUnauthorized, "Token verification failed")
