@@ -55,6 +55,11 @@ func (a *authController) Login(ctx *gin.Context) {
 
 // Logout implements interfaces.AuthController.
 func (a *authController) Logout(ctx *gin.Context) {
+	_, err := ctx.Cookie("token")
+	if err != nil {
+		utils.FailResponse(ctx, 400, "no token found")
+		return
+	}
 	ctx.SetCookie("token", "", -1, "/", "localhost", false, true)
 	utils.SuccessResponse(ctx, 200, "logout success")
 }
