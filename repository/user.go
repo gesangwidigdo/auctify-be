@@ -19,7 +19,7 @@ func NewUserRepository(db *gorm.DB) interfaces.UserRepository {
 // Login implements interfaces.UserRepository.
 func (u *userRepository) GetByUsername(username string) (model.User, error) {
 	var user model.User
-	if err := u.db.Raw("SELECT id, username, password FROM users WHERE username = ?", username).Take(&user).Error; err != nil {
+	if err := u.db.Raw("SELECT id, username, password FROM users WHERE username = ? AND deleted_at IS NULL", username).Take(&user).Error; err != nil {
 		return model.User{}, err
 	}
 	return user, nil
@@ -35,7 +35,7 @@ func (u *userRepository) Register(request model.User) (model.User, error) {
 
 // Delete implements interfaces.UserRepository.
 func (u *userRepository) Delete(id uint) error {
-	if err := u.db.Raw("DELETE FROM users WHERE id = ?", id).Error; err != nil {
+	if err := u.db.Exec("UPDATE users SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL", id).Error; err != nil {
 		return err
 	}
 	return nil
@@ -44,7 +44,7 @@ func (u *userRepository) Delete(id uint) error {
 // Detail implements interfaces.UserRepository.
 func (u *userRepository) Detail(id uint) (model.User, error) {
 	var user model.User
-	if err := u.db.Raw("SELECT id, name, email, username, address FROM users WHERE id = ?", id).Take(&user).Error; err != nil {
+	if err := u.db.Raw("SELECT id, name, email, username, address FROM users WHERE id = ? AND deleted_at IS NULL", id).Take(&user).Error; err != nil {
 		return model.User{}, err
 	}
 	return user, nil
@@ -53,7 +53,7 @@ func (u *userRepository) Detail(id uint) (model.User, error) {
 // List implements interfaces.UserRepository.
 func (u *userRepository) List() ([]model.User, error) {
 	var users []model.User
-	if err := u.db.Raw("SELECT id, name, username FROM users").Scan(&users).Error; err != nil {
+	if err := u.db.Raw("SELECT id, name, username FROM users WHERE deleted_at IS NULL").Scan(&users).Error; err != nil {
 		return nil, err
 	}
 	return users, nil
@@ -61,7 +61,7 @@ func (u *userRepository) List() ([]model.User, error) {
 
 // Update implements interfaces.UserRepository.
 func (u *userRepository) Update(id uint, request model.User) (model.User, error) {
-	if err := u.db.Model(&model.User{}).Where("id = ?", id).Updates(request).Error; err != nil {
+	if err := u.db.Model(&model.User{}).Where("id = ? AND deleted_at IS NULL", id).Updates(request).Error; err != nil {
 		return model.User{}, err
 	}
 	return request, nil

@@ -19,7 +19,26 @@ func NewUserController(userService interfaces.UserService) interfaces.UserContro
 
 // Delete implements interfaces.UserController.
 func (u *userController) Delete(ctx *gin.Context) {
-	panic("unimplemented")
+	id, ok := ctx.Get("id")
+	if !ok {
+		utils.FailResponse(ctx, 404, "User not found")
+		return
+	}
+	idFloat, ok := id.(float64)
+	if !ok {
+		utils.FailResponse(ctx, 400, "Invalid user ID type")
+		return
+	}
+	idUint := uint(idFloat)
+	deleteRes, err := u.userService.Delete(idUint)
+	if err != nil {
+		utils.FailResponse(ctx, 400, err.Error())
+		return
+	}
+
+	ctx.SetCookie("token", "", -1, "/", "localhost", false, true)
+
+	utils.SuccessResponse(ctx, 200, deleteRes)
 }
 
 // Detail implements interfaces.UserController.
