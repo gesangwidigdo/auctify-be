@@ -19,18 +19,12 @@ func NewUserController(userService interfaces.UserService) interfaces.UserContro
 
 // Delete implements interfaces.UserController.
 func (u *userController) Delete(ctx *gin.Context) {
-	id, ok := ctx.Get("id")
-	if !ok {
-		utils.FailResponse(ctx, 404, "User not found")
+	id, statCode, err := utils.ExtractID(ctx)
+	if err != nil && statCode != 0 {
+		utils.FailResponse(ctx, statCode, err.Error())
 		return
 	}
-	idFloat, ok := id.(float64)
-	if !ok {
-		utils.FailResponse(ctx, 400, "Invalid user ID type")
-		return
-	}
-	idUint := uint(idFloat)
-	deleteRes, err := u.userService.Delete(idUint)
+	deleteRes, err := u.userService.Delete(id)
 	if err != nil {
 		utils.FailResponse(ctx, 400, err.Error())
 		return
@@ -43,18 +37,12 @@ func (u *userController) Delete(ctx *gin.Context) {
 
 // Detail implements interfaces.UserController.
 func (u *userController) Detail(ctx *gin.Context) {
-	id, ok := ctx.Get("id")
-	if !ok {
-		utils.FailResponse(ctx, 404, "User not found")
+	id, statCode, err := utils.ExtractID(ctx)
+	if err != nil && statCode != 0 {
+		utils.FailResponse(ctx, statCode, err.Error())
 		return
 	}
-	idFloat, ok := id.(float64)
-	if !ok {
-		utils.FailResponse(ctx, 400, "Invalid user ID type")
-		return
-	}
-	idUint := uint(idFloat)
-	user, err := u.userService.Detail(idUint)
+	user, err := u.userService.Detail(id)
 	if err != nil {
 		utils.FailResponse(ctx, 400, err.Error())
 		return
@@ -76,24 +64,17 @@ func (u *userController) List(ctx *gin.Context) {
 // Update implements interfaces.UserController.
 func (u *userController) Update(ctx *gin.Context) {
 	var userUpdateRequest dto.UserUpdateRequest
-	id, ok := ctx.Get("id")
-	if !ok {
-		utils.FailResponse(ctx, 404, "User not found")
-		return
-	}
-
 	if err := ctx.ShouldBindJSON(&userUpdateRequest); err != nil {
 		utils.FailResponse(ctx, 400, err.Error())
 		return
 	}
 
-	idFloat, ok := id.(float64)
-	if !ok {
-		utils.FailResponse(ctx, 400, "Invalid user ID type")
+	id, statCode, err := utils.ExtractID(ctx)
+	if err != nil && statCode != 0 {
+		utils.FailResponse(ctx, statCode, err.Error())
 		return
 	}
-	idUint := uint(idFloat)
-	updateRes, err := u.userService.Update(idUint, userUpdateRequest)
+	updateRes, err := u.userService.Update(id, userUpdateRequest)
 	if err != nil {
 		utils.FailResponse(ctx, 400, err.Error())
 		return
