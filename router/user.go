@@ -17,4 +17,5 @@ func UserRoute(r *gin.RouterGroup, db *gorm.DB) {
 
 	r.GET("/", userController.List)
 	r.PUT("/", middleware.AuthMiddleware, userController.Update)
+	r.GET("/me", middleware.AuthMiddleware, userController.Detail)
 }

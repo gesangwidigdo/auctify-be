@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"fmt"
-
 	"github.com/gesangwidigdo/auctify-be/dto"
 	"github.com/gesangwidigdo/auctify-be/interfaces"
 	"github.com/gesangwidigdo/auctify-be/utils"
@@ -26,7 +24,24 @@ func (u *userController) Delete(ctx *gin.Context) {
 
 // Detail implements interfaces.UserController.
 func (u *userController) Detail(ctx *gin.Context) {
-	panic("unimplemented")
+	id, ok := ctx.Get("id")
+	if !ok {
+		utils.FailResponse(ctx, 404, "User not found")
+		return
+	}
+	idFloat, ok := id.(float64)
+	if !ok {
+		utils.FailResponse(ctx, 400, "Invalid user ID type")
+		return
+	}
+	idUint := uint(idFloat)
+	user, err := u.userService.Detail(idUint)
+	if err != nil {
+		utils.FailResponse(ctx, 400, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, 200, user)
 }
 
 // List implements interfaces.UserController.
@@ -44,7 +59,7 @@ func (u *userController) Update(ctx *gin.Context) {
 	var userUpdateRequest dto.UserUpdateRequest
 	id, ok := ctx.Get("id")
 	if !ok {
-		utils.FailResponse(ctx, 400, "User not found")
+		utils.FailResponse(ctx, 404, "User not found")
 		return
 	}
 
@@ -53,7 +68,6 @@ func (u *userController) Update(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println("goyim1")
 	idFloat, ok := id.(float64)
 	if !ok {
 		utils.FailResponse(ctx, 400, "Invalid user ID type")
