@@ -102,8 +102,16 @@ func (a *auctionService) List() ([]dto.AuctionListResponse, error) {
 }
 
 // Update implements interfaces.AuctionService.
-func (a *auctionService) Update(id uint, request dto.AuctionUpdateRequest) (dto.AuctionUpdateResponse, error) {
-	panic("unimplemented")
+func (a *auctionService) Update(id uint, request dto.AuctionUpdateRequest) (error) {
+	newAuction := model.Auction{
+		ItemName:    request.ItemName,
+		Description: request.Description,
+		EndTime:     request.EndTime,
+	}
+	if err := a.auctionRepo.Update(id, newAuction); err != nil {
+		return err
+	}
+	return nil
 }
 
 // UpdateCurrentPrice implements interfaces.AuctionService.

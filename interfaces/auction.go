@@ -20,7 +20,7 @@ type AuctionService interface {
 	Create(id uint, request dto.AuctionCreateRequest) (dto.AuctionCreateResponse, error)
 	List() ([]dto.AuctionListResponse, error)
 	Detail(id uint) (dto.AuctionDetailResponse, error)
-	Update(id uint, request dto.AuctionUpdateRequest) (dto.AuctionUpdateResponse, error)
+	Update(id uint, request dto.AuctionUpdateRequest) (error)
 	UpdateCurrentPrice(id uint, request dto.AuctionUpdateCurrentPriceRequest) (dto.AuctionUpdateCurrentPriceResponse, error)
 	CloseAuction(id uint) (dto.AuctionCloseResponse, error)
 	Delete(id uint) error

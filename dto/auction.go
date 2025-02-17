@@ -38,11 +38,7 @@ type AuctionListResponse struct {
 type AuctionUpdateRequest struct {
 	ItemName    string `json:"item_name"`
 	Description string `json:"description"`
-	EndTime     string `json:"end_time"`
-}
-
-type AuctionUpdateResponse struct {
-	Status string `json:"status"`
+	EndTime     time.Time `json:"end_time"`
 }
 
 type AuctionUpdateCurrentPriceRequest struct {
