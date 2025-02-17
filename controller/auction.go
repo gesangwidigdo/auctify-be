@@ -101,8 +101,3 @@ func (a *auctionController) UpdateCurrentPrice(ctx *gin.Context) {
 func (a *auctionController) CloseAuction(ctx *gin.Context) {
 	panic("unimplemented")
 }
-
-// Delete implements interfaces.AuctionController.
-func (a *auctionController) Delete(ctx *gin.Context) {
-	panic("unimplemented")
-}

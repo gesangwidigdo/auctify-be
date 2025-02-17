@@ -89,8 +89,3 @@ func (a *auctionRepository) CloseAuction(id uint) error {
 	}
 	return nil
 }
-
-// Delete implements interfaces.AuctionRepository.
-func (a *auctionRepository) Delete(id uint) error {
-	panic("unimplemented")
-}

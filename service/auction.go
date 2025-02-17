@@ -123,8 +123,3 @@ func (a *auctionService) UpdateCurrentPrice(id uint, request dto.AuctionUpdateCu
 func (a *auctionService) CloseAuction(id uint) (dto.AuctionCloseResponse, error) {
 	panic("unimplemented")
 }
-
-// Delete implements interfaces.AuctionService.
-func (a *auctionService) Delete(id uint) error {
-	panic("unimplemented")
-}

@@ -11,7 +11,6 @@ type AuctionRepository interface {
 	Update(id uint, request model.Auction) error
 	UpdateCurrentPrice(id uint, price float64) error
 	CloseAuction(id uint) error
-	Delete(id uint) error
 	List() ([]model.Auction, error)
 	Detail(id uint) (model.Auction, error)
 }
@@ -23,7 +22,6 @@ type AuctionService interface {
 	Update(id uint, request dto.AuctionUpdateRequest) (error)
 	UpdateCurrentPrice(id uint, request dto.AuctionUpdateCurrentPriceRequest) (dto.AuctionUpdateCurrentPriceResponse, error)
 	CloseAuction(id uint) (dto.AuctionCloseResponse, error)
-	Delete(id uint) error
 }
 
 type AuctionController interface {
@@ -33,5 +31,4 @@ type AuctionController interface {
 	Update(ctx *gin.Context)
 	UpdateCurrentPrice(ctx *gin.Context)
 	CloseAuction(ctx *gin.Context)
-	Delete(ctx *gin.Context)
 }
