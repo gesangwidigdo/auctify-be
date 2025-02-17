@@ -33,7 +33,7 @@ func (a *auctionService) Create(id uint, request dto.AuctionCreateRequest) (dto.
 	if request.StartPrice <= 0 {
 		return dto.AuctionCreateResponse{}, errors.New("start price must be greater than 0")
 	}
-	
+
 	if request.ItemName == "" {
 		return dto.AuctionCreateResponse{}, errors.New("item name must not be empty")
 	}
@@ -41,6 +41,7 @@ func (a *auctionService) Create(id uint, request dto.AuctionCreateRequest) (dto.
 	newAuction := model.Auction{
 		ItemName:     request.ItemName,
 		Description:  request.Description,
+		StartTime:    currentTime,
 		EndTime:      request.EndTime,
 		StartPrice:   request.StartPrice,
 		CurrentPrice: request.StartPrice,

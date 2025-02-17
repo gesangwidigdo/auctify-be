@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/gesangwidigdo/auctify-be/interfaces"
 	"github.com/gesangwidigdo/auctify-be/model"
 	"gorm.io/gorm"
@@ -18,16 +20,18 @@ func NewAuctionRepository(db *gorm.DB) interfaces.AuctionRepository {
 
 // Create implements interfaces.AuctionRepository.
 func (a *auctionRepository) Create(request model.Auction) error {
+	fmt.Println(request.EndTime)
 	if err := a.db.Exec(
-			"INSERT INTO auctions (item_name, description, start_time, end_time, start_price, current_price, is_closed, user_id, created_at, updated_at) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, NOW(), NOW())", 
-			request.ItemName, 
-			request.Description, 
-			request.EndTime, 
-			request.StartPrice, 
-			request.CurrentPrice, 
-			request.IsClosed,
-			request.UserID,
-		).Error; err != nil {
+		"INSERT INTO auctions (item_name, description, start_time, end_time, start_price, current_price, is_closed, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())",
+		request.ItemName,
+		request.Description,
+		request.StartTime,
+		request.EndTime,
+		request.StartPrice,
+		request.CurrentPrice,
+		request.IsClosed,
+		request.UserID,
+	).Error; err != nil {
 		return err
 	}
 	return nil
@@ -37,9 +41,9 @@ func (a *auctionRepository) Create(request model.Auction) error {
 func (a *auctionRepository) Detail(id uint) (model.Auction, error) {
 	var auction model.Auction
 	if err := a.db.Raw(
-			"SELECT id, item_name, description, start_time, end_time, start_price, current_price, is_closed, user_id FROM auctions WHERE id = ? AND deleted_at IS NULL", 
-			id,
-		).Take(&auction).Error; err != nil {
+		"SELECT id, item_name, description, start_time, end_time, start_price, current_price, is_closed, user_id FROM auctions WHERE id = ? AND deleted_at IS NULL",
+		id,
+	).Take(&auction).Error; err != nil {
 		return model.Auction{}, err
 	}
 	return auction, nil
@@ -49,8 +53,8 @@ func (a *auctionRepository) Detail(id uint) (model.Auction, error) {
 func (a *auctionRepository) List() ([]model.Auction, error) {
 	var auctions []model.Auction
 	if err := a.db.Raw(
-			"SELECT item_name, description, start_time, end_time, current_price, is_closed FROM auctions AND deleted_at IS NULL",
-		).Scan(&auctions).Error; err != nil {
+		"SELECT item_name, description, start_time, end_time, current_price, is_closed FROM auctions AND deleted_at IS NULL",
+	).Scan(&auctions).Error; err != nil {
 		return nil, err
 	}
 	return auctions, nil
