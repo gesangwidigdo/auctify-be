@@ -79,13 +79,13 @@ func (a *auctionRepository) UpdateCurrentPrice(id uint, price float64) error {
 	return nil
 }
 
-func (a *auctionRepository) CloseAuction(id uint) error {
-	if err := a.db.Exec(
-		"UPDATE auctions SET is_closed = ? WHERE id = ? AND deleted_at IS NULL",
-		true,
-		id,
-	).Error; err != nil {
-		return err
-	}
-	return nil
-}
+// func (a *auctionRepository) CloseAuction(id uint) error {
+// 	if err := a.db.Exec(
+// 		"UPDATE auctions SET is_closed = ? WHERE id = ? AND deleted_at IS NULL",
+// 		true,
+// 		id,
+// 	).Error; err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }

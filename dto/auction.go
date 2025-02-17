@@ -48,11 +48,3 @@ type AuctionUpdateCurrentPriceRequest struct {
 type AuctionUpdateCurrentPriceResponse struct {
 	Status string `json:"status"`
 }
-
-type AuctionCloseRequest struct {
-	IsClosed bool `json:"is_closed" binding:"required"`
-}
-
-type AuctionCloseResponse struct {
-	Status string `json:"status"`
-}

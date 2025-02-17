@@ -119,7 +119,20 @@ func (a *auctionService) UpdateCurrentPrice(id uint, request dto.AuctionUpdateCu
 	panic("unimplemented")
 }
 
-// CloseAuction implements interfaces.AuctionService.
-func (a *auctionService) CloseAuction(id uint) (dto.AuctionCloseResponse, error) {
-	panic("unimplemented")
-}
+// // CloseAuction implements interfaces.AuctionService.
+// func (a *auctionService) CloseAuction(id uint) (error) {
+// 	auction, err := a.auctionRepo.Detail(id)
+// 	if err != nil {
+// 		return errors.New("auction not found")
+// 	}
+	
+// 	if auction.IsClosed {
+// 		return errors.New("auction already closed")
+// 	}
+
+// 	if err := a.auctionRepo.CloseAuction(id); err != nil {
+// 		return errors.New("failed to close auction")
+// 	}
+
+// 	return nil
+// }

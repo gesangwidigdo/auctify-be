@@ -97,7 +97,7 @@ func (a *auctionController) UpdateCurrentPrice(ctx *gin.Context) {
 	panic("unimplemented")
 }
 
-// CloseAuction implements interfaces.AuctionController.
-func (a *auctionController) CloseAuction(ctx *gin.Context) {
-	panic("unimplemented")
-}
+// // CloseAuction implements interfaces.AuctionController.
+// func (a *auctionController) CloseAuction(ctx *gin.Context) {
+// 	panic("unimplemented")
+// }
