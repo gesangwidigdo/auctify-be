@@ -56,7 +56,3 @@ type AuctionCloseRequest struct {
 type AuctionCloseResponse struct {
 	Status string `json:"status"`
 }
-
-type AuctionDeleteRequest struct {
-	ID uint `json:"id" binding:"required"`
-}
