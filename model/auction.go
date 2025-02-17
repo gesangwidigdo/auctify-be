@@ -16,4 +16,8 @@ type Auction struct {
 	StartPrice   float64   `json:"start_price" gorm:"not null"`
 	CurrentPrice float64   `json:"current_price" gorm:"not null"`
 	IsClosed     bool      `json:"is_closed" gorm:"not null"`
+
+	// Relationship
+	User   []User   `json:"user"`
+	Offers []Offer `json:"offers"`
 }

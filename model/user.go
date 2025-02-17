@@ -12,5 +12,6 @@ type User struct {
 	Address  string `json:"address" gorm:"type:text"`
 
 	// Relationship
-	// Items []Item `json:"items"`
+	Offers   []Offer   `json:"offers"`
+	Auctions []Auction `json:"auctions"`
 }
