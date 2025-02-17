@@ -18,6 +18,6 @@ type Auction struct {
 	IsClosed     bool      `json:"is_closed" gorm:"not null"`
 
 	// Relationship
-	User   []User   `json:"user"`
+	User   User   `json:"user"`
 	Offers []Offer `json:"offers"`
 }
