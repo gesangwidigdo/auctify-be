@@ -7,10 +7,10 @@ import (
 )
 
 type OfferRepository interface {
-	Create(request model.Offer) dto.OfferCreateResponse
+	Create(request model.Offer) (error)
 }
 type OfferService interface {
-	Create(offer dto.OfferCreateRequest) dto.OfferCreateResponse
+	Create(userId uint, offer dto.OfferCreateRequest) (dto.OfferCreateResponse, error)
 }
 type OfferController interface {
 	Create(ctx *gin.Context)
