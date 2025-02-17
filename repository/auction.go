@@ -19,7 +19,7 @@ func NewAuctionRepository(db *gorm.DB) interfaces.AuctionRepository {
 // Create implements interfaces.AuctionRepository.
 func (a *auctionRepository) Create(request model.Auction) error {
 	if err := a.db.Exec(
-			"INSERT INTO auctions (item_name, description, start_time, end_time, start_price, current_price, is_closed, user_id) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)", 
+			"INSERT INTO auctions (item_name, description, start_time, end_time, start_price, current_price, is_closed, user_id, created_at, updated_at) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, NOW(), NOW())", 
 			request.ItemName, 
 			request.Description, 
 			request.EndTime, 
