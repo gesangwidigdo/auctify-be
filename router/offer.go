@@ -17,4 +17,5 @@ func OfferRouter(r *gin.RouterGroup, db *gorm.DB) {
 	var offerController interfaces.OfferController = controller.NewOfferController(offerService)
 
 	r.POST("/", middleware.AuthMiddleware, offerController.Create)
+	r.GET("/:auction_id", offerController.List)
 }

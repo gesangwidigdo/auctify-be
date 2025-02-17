@@ -75,18 +75,32 @@ func (o *offerService) Create(userId uint, offer dto.OfferCreateRequest) (dto.Of
 		}
 	}
 
-	// if err := o.offerRepo.Create(offerResponse); err != nil {
-	// 	return dto.OfferCreateResponse{}, err
-	// }
-
-	// if err := o.auctionRepo.UpdateCurrentPrice(auction.ID, offer.OfferAmount); err != nil {
-	// 	return dto.OfferCreateResponse{}, err
-	// }
-
 	return dto.OfferCreateResponse{
 		UserID:      offerResponse.UserID,
 		AuctionID:   offerResponse.AuctionID,
 		OfferAmount: offerResponse.OfferAmount,
 		OfferTime:   offerResponse.OfferTime.String(),
 	}, nil
+}
+
+// List implements interfaces.OfferService.
+func (o *offerService) List(auctionId uint) ([]dto.OfferListResponse, error) {
+	offers, err := o.offerRepo.List(auctionId)
+	if err != nil {
+		return nil, err
+	}
+
+	offerListResponse := make([]dto.OfferListResponse, 0)
+	for _, offer := range offers {
+		offerListResponse = append(offerListResponse, dto.OfferListResponse{
+			User: dto.UserOfferListResponse{
+				Name:     offer.User.Name,
+				Username: offer.User.Username,
+			},
+			OfferAmount: offer.OfferAmount,
+			OfferTime:   offer.OfferTime.String(),
+		})
+	}
+
+	return offerListResponse, nil
 }

@@ -11,3 +11,14 @@ type OfferCreateResponse struct {
 	OfferAmount float64 `json:"offer_amount"`
 	OfferTime   string  `json:"offer_time"`
 }
+
+type OfferListResponse struct {
+	User        UserOfferListResponse `json:"user"`
+	OfferAmount float64               `json:"offer_amount"`
+	OfferTime   string                `json:"offer_time"`
+}
+
+type UserOfferListResponse struct {
+	Name     string `json:"name"`
+	Username string `json:"username"`
+}

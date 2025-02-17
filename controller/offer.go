@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/gesangwidigdo/auctify-be/dto"
 	"github.com/gesangwidigdo/auctify-be/interfaces"
 	"github.com/gesangwidigdo/auctify-be/utils"
@@ -34,6 +36,24 @@ func (o *offerController) Create(ctx *gin.Context) {
 		utils.FailResponse(ctx, 400, err.Error())
 		return
 	}
-	
+
 	utils.SuccessResponse(ctx, 201, offerResponse)
+}
+
+// List implements interfaces.OfferController.
+func (o *offerController) List(ctx *gin.Context) {
+	auctionID := ctx.Param("auction_id")
+	uintAuctionID, err := strconv.ParseUint(auctionID, 10, 64)
+	if err != nil {
+		utils.FailResponse(ctx, 400, err.Error())
+		return
+	}
+
+	offers, err := o.offerService.List(uint(uintAuctionID))
+	if err != nil {
+		utils.FailResponse(ctx, 400, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, 200, offers)
 }

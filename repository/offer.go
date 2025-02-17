@@ -21,3 +21,12 @@ func (o *offerRepository) Create(request model.Offer) error {
 	}
 	return nil
 }
+
+// List implements interfaces.OfferRepository.
+func (o *offerRepository) List(auctionId uint) ([]model.Offer, error) {
+	var offers []model.Offer
+	if err := o.db.Preload("User").Where("auction_id = ?", auctionId).Find(&offers).Error; err != nil {
+		return nil, err
+	}
+	return offers, nil
+}
