@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"sync"
 	"time"
 
 	"github.com/gesangwidigdo/auctify-be/dto"
@@ -46,13 +47,41 @@ func (o *offerService) Create(userId uint, offer dto.OfferCreateRequest) (dto.Of
 		OfferTime:   currentTime,
 	}
 
-	if err := o.offerRepo.Create(offerResponse); err != nil {
-		return dto.OfferCreateResponse{}, err
+	var wg sync.WaitGroup
+	errChan := make(chan error, 2)
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := o.offerRepo.Create(offerResponse); err != nil {
+			errChan <- err
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := o.auctionRepo.UpdateCurrentPrice(auction.ID, offer.OfferAmount); err != nil {
+			errChan <- err
+		}
+	}()
+
+	wg.Wait()
+	close(errChan)
+
+	for err := range errChan {
+		if err != nil {
+			return dto.OfferCreateResponse{}, err
+		}
 	}
 
-	if err := o.auctionRepo.UpdateCurrentPrice(auction.ID, offer.OfferAmount); err != nil {
-		return dto.OfferCreateResponse{}, err
-	}
+	// if err := o.offerRepo.Create(offerResponse); err != nil {
+	// 	return dto.OfferCreateResponse{}, err
+	// }
+
+	// if err := o.auctionRepo.UpdateCurrentPrice(auction.ID, offer.OfferAmount); err != nil {
+	// 	return dto.OfferCreateResponse{}, err
+	// }
 
 	return dto.OfferCreateResponse{
 		UserID:      offerResponse.UserID,
