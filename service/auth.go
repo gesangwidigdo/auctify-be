@@ -27,9 +27,6 @@ func (a *authService) Login(request dto.UserLoginRequest) (dto.UserLoginResponse
 		return dto.UserLoginResponse{}, errors.New("Username does not exist, please register first")
 	}
 
-	println(userFound.Password)
-	println(request.Password)
-
 	if !utils.CheckPasswordHash(userFound.Password, request.Password) {
 		return dto.UserLoginResponse{}, errors.New("Invalid password")
 	}
