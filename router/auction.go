@@ -16,4 +16,6 @@ func AuctionRouter(r *gin.RouterGroup, db *gorm.DB) {
 	var auctionController interfaces.AuctionController = controller.NewAuctionController(auctionService)
 
 	r.POST("/", middleware.AuthMiddleware, auctionController.Create)
+	r.GET("/", auctionController.List)
+	r.GET("/:id", auctionController.Detail)
 }

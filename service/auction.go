@@ -64,12 +64,41 @@ func (a *auctionService) Create(id uint, request dto.AuctionCreateRequest) (dto.
 
 // Detail implements interfaces.AuctionService.
 func (a *auctionService) Detail(id uint) (dto.AuctionDetailResponse, error) {
-	panic("unimplemented")
+	auction, err := a.auctionRepo.Detail(id)
+	if err != nil {
+		return dto.AuctionDetailResponse{}, err
+	}
+
+	return dto.AuctionDetailResponse{
+		ID:           auction.ID,
+		ItemName:     auction.ItemName,
+		Description:  auction.Description,
+		StartTime:    auction.StartTime.String(),
+		EndTime:      auction.EndTime.String(),
+		StartPrice:   auction.StartPrice,
+		CurrentPrice: auction.CurrentPrice,
+		IsClosed:     auction.IsClosed,
+	}, nil
 }
 
 // List implements interfaces.AuctionService.
 func (a *auctionService) List() ([]dto.AuctionListResponse, error) {
-	panic("unimplemented")
+	auctions, err := a.auctionRepo.List()
+	if err != nil {
+		return nil, err
+	}
+
+	var response []dto.AuctionListResponse
+	for _, auction := range auctions {
+		response = append(response, dto.AuctionListResponse{
+			ItemName:     auction.ItemName,
+			EndTime:      auction.EndTime.String(),
+			CurrentPrice: auction.CurrentPrice,
+			IsClosed:     auction.IsClosed,
+		})
+	}
+
+	return response, nil
 }
 
 // Update implements interfaces.AuctionService.

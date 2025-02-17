@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/gesangwidigdo/auctify-be/dto"
 	"github.com/gesangwidigdo/auctify-be/interfaces"
 	"github.com/gesangwidigdo/auctify-be/utils"
@@ -39,12 +41,31 @@ func (a *auctionController) Create(ctx *gin.Context) {
 
 // Detail implements interfaces.AuctionController.
 func (a *auctionController) Detail(ctx *gin.Context) {
-	panic("unimplemented")
+	id := ctx.Param("id")
+	auctionID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		utils.FailResponse(ctx, 400, err.Error())
+		return
+	}
+
+	auctionResponse, err := a.auctionService.Detail(uint(auctionID))
+	if err != nil {
+		utils.FailResponse(ctx, 400, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, 200, auctionResponse)
 }
 
 // List implements interfaces.AuctionController.
 func (a *auctionController) List(ctx *gin.Context) {
-	panic("unimplemented")
+	auctions, err := a.auctionService.List()
+	if err != nil {
+		utils.FailResponse(ctx, 400, err.Error())
+		return
+	}
+
+	utils.SuccessResponse(ctx, 200, auctions)
 }
 
 // Update implements interfaces.AuctionController.

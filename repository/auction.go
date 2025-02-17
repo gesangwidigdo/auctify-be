@@ -53,7 +53,7 @@ func (a *auctionRepository) Detail(id uint) (model.Auction, error) {
 func (a *auctionRepository) List() ([]model.Auction, error) {
 	var auctions []model.Auction
 	if err := a.db.Raw(
-		"SELECT item_name, description, start_time, end_time, current_price, is_closed FROM auctions AND deleted_at IS NULL",
+		"SELECT item_name, description, start_time, end_time, current_price, is_closed FROM auctions WHERE deleted_at IS NULL",
 	).Scan(&auctions).Error; err != nil {
 		return nil, err
 	}

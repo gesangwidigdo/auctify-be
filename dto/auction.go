@@ -30,8 +30,6 @@ type AuctionDetailResponse struct {
 
 type AuctionListResponse struct {
 	ItemName     string  `json:"item_name"`
-	Description  string  `json:"description"`
-	StartTime    string  `json:"start_time"`
 	EndTime      string  `json:"end_time"`
 	CurrentPrice float64 `json:"current_price"`
 	IsClosed     bool    `json:"is_closed"`
