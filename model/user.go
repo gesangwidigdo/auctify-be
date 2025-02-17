@@ -10,4 +10,7 @@ type User struct {
 	Password string `json:"password" gorm:"not null; type:varchar(255)"`
 	Role     string `json:"role" gorm:"not null; type:varchar(50)"`
 	Address  string `json:"address" gorm:"type:text"`
+
+	// Relationship
+	// Items []Item `json:"items"`
 }
