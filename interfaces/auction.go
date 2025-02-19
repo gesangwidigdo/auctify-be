@@ -10,9 +10,10 @@ type AuctionRepository interface {
 	Create(request model.Auction) error
 	Update(id uint, request model.Auction) error
 	UpdateCurrentPrice(id uint, price float64) error
-	// CloseAuction(id uint) error
+	CloseAuction(id uint) error
 	List() ([]model.Auction, error)
 	Detail(id uint) (model.Auction, error)
+	GetAuctionsToClose() ([]model.Auction, error)
 }
 
 type AuctionService interface {
@@ -21,6 +22,7 @@ type AuctionService interface {
 	Detail(id uint) (dto.AuctionDetailResponse, error)
 	Update(id uint, request dto.AuctionUpdateRequest) (error)
 	UpdateCurrentPrice(id uint, request dto.AuctionUpdateCurrentPriceRequest) (dto.AuctionUpdateCurrentPriceResponse, error)
+	StartAuctionAutoClose()
 	// CloseAuction(id uint) (error)
 }
 

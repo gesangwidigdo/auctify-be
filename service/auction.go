@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/gesangwidigdo/auctify-be/dto"
@@ -22,13 +23,13 @@ func NewAuctionService(auctionRepo interfaces.AuctionRepository) interfaces.Auct
 // Create implements interfaces.AuctionService.
 func (a *auctionService) Create(id uint, request dto.AuctionCreateRequest) (dto.AuctionCreateResponse, error) {
 	currentTime := time.Now()
-	if request.EndTime.Before(currentTime) {
+	if request.EndTime.UTC().Before(currentTime) {
 		return dto.AuctionCreateResponse{}, errors.New("insert valid end time")
 	}
 
-	if request.EndTime.Before(currentTime.AddDate(0, 0, 3)) {
-		return dto.AuctionCreateResponse{}, errors.New("end time must be at least 3 day from now")
-	}
+	// if request.EndTime.Before(currentTime.AddDate(0, 0, 3)) {
+	// 	return dto.AuctionCreateResponse{}, errors.New("end time must be at least 3 day from now")
+	// }
 
 	if request.StartPrice <= 0 {
 		return dto.AuctionCreateResponse{}, errors.New("start price must be greater than 0")
@@ -102,7 +103,7 @@ func (a *auctionService) List() ([]dto.AuctionListResponse, error) {
 }
 
 // Update implements interfaces.AuctionService.
-func (a *auctionService) Update(id uint, request dto.AuctionUpdateRequest) (error) {
+func (a *auctionService) Update(id uint, request dto.AuctionUpdateRequest) error {
 	newAuction := model.Auction{
 		ItemName:    request.ItemName,
 		Description: request.Description,
@@ -119,20 +120,47 @@ func (a *auctionService) UpdateCurrentPrice(id uint, request dto.AuctionUpdateCu
 	panic("unimplemented")
 }
 
-// // CloseAuction implements interfaces.AuctionService.
-// func (a *auctionService) CloseAuction(id uint) (error) {
-// 	auction, err := a.auctionRepo.Detail(id)
-// 	if err != nil {
-// 		return errors.New("auction not found")
-// 	}
-	
-// 	if auction.IsClosed {
-// 		return errors.New("auction already closed")
-// 	}
+// CloseAuction implements interfaces.AuctionService.
+func (a *auctionService) CloseAuction(id uint) error {
+	auction, err := a.auctionRepo.Detail(id)
+	if err != nil {
+		return err
+	}
 
-// 	if err := a.auctionRepo.CloseAuction(id); err != nil {
-// 		return errors.New("failed to close auction")
-// 	}
+	if auction.EndTime.Before(time.Now()) {
+		if err := a.auctionRepo.CloseAuction(id); err != nil {
+			return err
+		}
+		fmt.Println("Auction", id, "closed successfully")
+	} else {
+		fmt.Println("Auction", id, "is still active")
+	}
+	return nil
+}
 
-// 	return nil
-// }
+// Auto-close semua auction yang sudah lewat end_time
+func (a *auctionService) StartAuctionAutoClose() {
+	ticker := time.NewTicker(1 * time.Minute)
+
+	go func() {
+		for range ticker.C {
+			fmt.Println("Running auction auto-close task at", time.Now())
+
+			// Ambil semua auction yang sudah lewat end_time dan belum closed
+			auctions, err := a.auctionRepo.GetAuctionsToClose()
+			if err != nil {
+				fmt.Println("Error fetching auctions to close:", err)
+				continue
+			}
+
+			// Close semua auction yang memenuhi syarat
+			for _, auction := range auctions {
+				if err := a.auctionRepo.CloseAuction(auction.ID); err != nil {
+					fmt.Println("Failed to close auction", auction.ID, ":", err)
+				} else {
+					fmt.Println("Auction", auction.ID, "closed successfully")
+				}
+			}
+		}
+	}()
+}

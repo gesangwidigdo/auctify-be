@@ -81,7 +81,7 @@ func (a *auctionRepository) UpdateCurrentPrice(id uint, price float64) error {
 
 // func (a *auctionRepository) CloseAuction(id uint) error {
 // 	if err := a.db.Exec(
-// 		"UPDATE auctions SET is_closed = ? WHERE id = ? AND deleted_at IS NULL",
+// 		"UPDATE auctions SET is_closed = ? WHERE id = ? AND end_time <= NOW() AND is_closed = false AND deleted_at IS NULL",
 // 		true,
 // 		id,
 // 	).Error; err != nil {
@@ -89,3 +89,20 @@ func (a *auctionRepository) UpdateCurrentPrice(id uint, price float64) error {
 // 	}
 // 	return nil
 // }
+
+// Menutup auction tertentu
+func (a *auctionRepository) CloseAuction(id uint) error {
+	return a.db.Exec(
+		"UPDATE auctions SET is_closed = ? WHERE id = ? AND end_time <= NOW() AND is_closed = false AND deleted_at IS NULL",
+		true, id,
+	).Error
+}
+
+// Ambil semua auction yang sudah harus ditutup
+func (a *auctionRepository) GetAuctionsToClose() ([]model.Auction, error) {
+	var auctions []model.Auction
+	err := a.db.Raw(
+		"SELECT id, end_time FROM auctions WHERE end_time <= NOW() AND is_closed = false AND deleted_at IS NULL",
+	).Scan(&auctions).Error
+	return auctions, err
+}
