@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"sync"
 	"time"
 
 	"github.com/gesangwidigdo/auctify-be/dto"
@@ -40,46 +39,26 @@ func (o *offerService) Create(userId uint, offer dto.OfferCreateRequest) (dto.Of
 		return dto.OfferCreateResponse{}, errors.New("offer amount must be higher than the current auction price")
 	}
 
-	offerResponse := model.Offer{
+	newOffer := model.Offer{
 		UserID:      userId,
 		AuctionID:   offer.AuctionID,
 		OfferAmount: offer.OfferAmount,
 		OfferTime:   currentTime,
 	}
 
-	var wg sync.WaitGroup
-	errChan := make(chan error, 2)
+	if err := o.offerRepo.Create(newOffer); err != nil {
+		return dto.OfferCreateResponse{}, err
+	}
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		if err := o.offerRepo.Create(offerResponse); err != nil {
-			errChan <- err
-		}
-	}()
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		if err := o.auctionRepo.UpdateCurrentPrice(auction.ID, offer.OfferAmount); err != nil {
-			errChan <- err
-		}
-	}()
-
-	wg.Wait()
-	close(errChan)
-
-	for err := range errChan {
-		if err != nil {
-			return dto.OfferCreateResponse{}, err
-		}
+	if err := o.auctionRepo.UpdateCurrentPrice(auction.ID, offer.OfferAmount); err != nil {
+		return dto.OfferCreateResponse{}, err
 	}
 
 	return dto.OfferCreateResponse{
-		UserID:      offerResponse.UserID,
-		AuctionID:   offerResponse.AuctionID,
-		OfferAmount: offerResponse.OfferAmount,
-		OfferTime:   offerResponse.OfferTime.String(),
+		UserID:      newOffer.UserID,
+		AuctionID:   newOffer.AuctionID,
+		OfferAmount: newOffer.OfferAmount,
+		OfferTime:   newOffer.OfferTime.String(),
 	}, nil
 }
 
@@ -90,46 +69,17 @@ func (o *offerService) List(auctionId uint) ([]dto.OfferListResponse, error) {
 		return nil, err
 	}
 
-	var wg sync.WaitGroup
-	resultChan := make(chan dto.UserOfferListResponse, len(offers))
-	
+	offerListResponse := make([]dto.OfferListResponse, 0)
 	for _, offer := range offers {
-		wg.Add(1)
-
-		go func(offer model.Offer) {
-			defer wg.Done()
-			resultChan <- dto.UserOfferListResponse{
+		offerListResponse = append(offerListResponse, dto.OfferListResponse{
+			User: dto.UserOfferListResponse{
 				Name:     offer.User.Name,
 				Username: offer.User.Username,
-			}
-		}(offer)
-	}
-
-	wg.Wait()
-	close(resultChan)
-
-	offerListResponse := make([]dto.OfferListResponse, 0, len(offers))
-	idx := 0
-	for result := range resultChan {
-		offerListResponse = append(offerListResponse, dto.OfferListResponse{
-			User: result,
-			OfferAmount: offers[idx].OfferAmount,
-			OfferTime: offers[idx].OfferTime.String(),
+			},
+			OfferAmount: offer.OfferAmount,
+			OfferTime:   offer.OfferTime.String(),
 		})
-		idx++
 	}
-
-	// offerListResponse := make([]dto.OfferListResponse, 0)
-	// for _, offer := range offers {
-	// 	offerListResponse = append(offerListResponse, dto.OfferListResponse{
-	// 		User: dto.UserOfferListResponse{
-	// 			Name:     offer.User.Name,
-	// 			Username: offer.User.Username,
-	// 		},
-	// 		OfferAmount: offer.OfferAmount,
-	// 		OfferTime:   offer.OfferTime.String(),
-	// 	})
-	// }
 
 	return offerListResponse, nil
 }
