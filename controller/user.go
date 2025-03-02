@@ -18,6 +18,14 @@ func NewUserController(userService interfaces.UserService) interfaces.UserContro
 }
 
 // Delete implements interfaces.UserController.
+// @Summary Delete user
+// @Description Delete user data
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /user [delete]
 func (u *userController) Delete(ctx *gin.Context) {
 	id, statCode, err := utils.ExtractID(ctx)
 	if err != nil && statCode != 0 {
@@ -36,6 +44,14 @@ func (u *userController) Delete(ctx *gin.Context) {
 }
 
 // Detail implements interfaces.UserController.
+// @Summary Get logged in user
+// @Description Get user detail data
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /user/me [get]
 func (u *userController) Detail(ctx *gin.Context) {
 	id, statCode, err := utils.ExtractID(ctx)
 	if err != nil && statCode != 0 {
@@ -52,6 +68,14 @@ func (u *userController) Detail(ctx *gin.Context) {
 }
 
 // List implements interfaces.UserController.
+// @Summary List user
+// @Description Get list of user data
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /user [get]
 func (u *userController) List(ctx *gin.Context) {
 	users, err := u.userService.List()
 	if err != nil {
@@ -62,6 +86,15 @@ func (u *userController) List(ctx *gin.Context) {
 }
 
 // Update implements interfaces.UserController.
+// @Summary Update user
+// @Description Update user data
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param request body dto.UserUpdateRequest true "User Update Data"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /user [put]
 func (u *userController) Update(ctx *gin.Context) {
 	var userUpdateRequest dto.UserUpdateRequest
 	if err := ctx.ShouldBindJSON(&userUpdateRequest); err != nil {
