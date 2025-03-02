@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"errors"
+	"strings"
+
 	"github.com/gesangwidigdo/auctify-be/interfaces"
 	"github.com/gesangwidigdo/auctify-be/model"
 	"gorm.io/gorm"
@@ -19,6 +22,9 @@ func NewAuctionRepository(db *gorm.DB) interfaces.AuctionRepository {
 // Create implements interfaces.AuctionRepository.
 func (a *auctionRepository) Create(request model.Auction) error {
 	if err := a.db.Create(&request).Error; err != nil {
+		if strings.Contains(err.Error(), "Duplicate") {
+			return errors.New("item already registered on auction")
+		}
 		return err
 	}
 	return nil
