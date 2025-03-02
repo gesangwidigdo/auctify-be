@@ -287,6 +287,95 @@
                 }
             }
         },
+        "/offer": {
+            "post": {
+                "description": "Create offer data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offer"
+                ],
+                "summary": "Create Offer",
+                "parameters": [
+                    {
+                        "description": "Offer Create Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.OfferCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/offer/{id}": {
+            "get": {
+                "description": "Get list offer data by auction id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offer"
+                ],
+                "summary": "Offer List By Auction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Auction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "description": "Get list of user data",
@@ -432,6 +521,7 @@
                     "type": "string"
                 },
                 "end_time": {
+                    "description": "format example: '2025-03-05T07:00:00+07:00'",
                     "type": "string"
                 },
                 "item_name": {
@@ -453,6 +543,17 @@
                 },
                 "item_name": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.OfferCreateRequest": {
+            "type": "object",
+            "properties": {
+                "auction_id": {
+                    "type": "integer"
+                },
+                "offer_amount": {
+                    "type": "number"
                 }
             }
         },

@@ -4,6 +4,7 @@ definitions:
       description:
         type: string
       end_time:
+        description: 'format example: ''2025-03-05T07:00:00+07:00'''
         type: string
       item_name:
         type: string
@@ -22,6 +23,13 @@ definitions:
         type: string
       item_name:
         type: string
+    type: object
+  dto.OfferCreateRequest:
+    properties:
+      auction_id:
+        type: integer
+      offer_amount:
+        type: number
     type: object
   dto.UserLoginRequest:
     properties:
@@ -258,6 +266,66 @@ paths:
       summary: Register user baru
       tags:
       - auth
+  /offer:
+    post:
+      consumes:
+      - application/json
+      description: Create offer data
+      parameters:
+      - description: Offer Create Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OfferCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create Offer
+      tags:
+      - offer
+  /offer/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get list offer data by auction id
+      parameters:
+      - description: Auction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Offer List By Auction
+      tags:
+      - offer
   /user:
     delete:
       consumes:
