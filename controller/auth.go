@@ -17,7 +17,17 @@ func NewAuthController(authService interfaces.AuthService) interfaces.AuthContro
 	}
 }
 
-// Register implements interfaces.AuthController.
+// Register mendaftarkan user baru
+// @Summary Register user baru
+// @Description Mendaftarkan user baru dengan email dan password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body dto.UserRegisterRequest true "User Registration Data"
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /auth/register [post]
 func (a *authController) Register(ctx *gin.Context) {
 	var userRequest dto.UserRegisterRequest
 	if err := ctx.ShouldBindJSON(&userRequest); err != nil {
@@ -34,7 +44,17 @@ func (a *authController) Register(ctx *gin.Context) {
 	utils.SuccessResponse(ctx, 201, userResponse)
 }
 
-// Login implements interfaces.AuthController.
+// Login user ke sistem
+// @Summary Login user
+// @Description Login user dengan email dan password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body dto.UserLoginRequest true "User Login Data"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 401 {object} map[string]interface{}
+// @Router /auth/login [post]
 func (a *authController) Login(ctx *gin.Context) {
 	var loginAttempt dto.UserLoginRequest
 	if err := ctx.ShouldBindJSON(&loginAttempt); err != nil {
@@ -53,7 +73,13 @@ func (a *authController) Login(ctx *gin.Context) {
 	utils.SuccessResponse(ctx, 200, "login success")
 }
 
-// Logout implements interfaces.AuthController.
+// Logout user dari sistem
+// @Summary Logout user
+// @Description Menghapus token autentikasi
+// @Tags auth
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /auth/logout [post]
 func (a *authController) Logout(ctx *gin.Context) {
 	_, err := ctx.Cookie("token")
 	if err != nil {

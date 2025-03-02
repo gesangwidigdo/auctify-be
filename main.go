@@ -8,6 +8,7 @@ import (
 	"github.com/gesangwidigdo/auctify-be/service"
 	"github.com/gesangwidigdo/auctify-be/utils"
 	"github.com/gin-gonic/gin"
+	_ "github.com/gesangwidigdo/auctify-be/docs"
 )
 
 func main() {
@@ -34,6 +35,6 @@ func main() {
 	auctionService.StartAuctionAutoClose()
 
 	r.Run()
-	
+
 	select{}
 }

@@ -140,7 +140,7 @@ func (a *auctionService) CloseAuction(id uint) error {
 
 // Auto-close semua auction yang sudah lewat end_time
 func (a *auctionService) StartAuctionAutoClose() {
-	ticker := time.NewTicker(1 * time.Minute)
+	ticker := time.NewTicker(30 * time.Minute)
 
 	go func() {
 		for range ticker.C {
