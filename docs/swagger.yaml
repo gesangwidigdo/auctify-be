@@ -1,4 +1,28 @@
 definitions:
+  dto.AuctionCreateRequest:
+    properties:
+      description:
+        type: string
+      end_time:
+        type: string
+      item_name:
+        type: string
+      start_price:
+        type: number
+    required:
+    - end_time
+    - item_name
+    - start_price
+    type: object
+  dto.AuctionUpdateRequest:
+    properties:
+      description:
+        type: string
+      end_time:
+        type: string
+      item_name:
+        type: string
+    type: object
   dto.UserLoginRequest:
     properties:
       password:
@@ -43,6 +67,114 @@ definitions:
 info:
   contact: {}
 paths:
+  /auction:
+    post:
+      consumes:
+      - application/json
+      description: Create new auction
+      parameters:
+      - description: Auction Create Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AuctionCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create Auction
+      tags:
+      - auction
+  /auction/:
+    get:
+      consumes:
+      - application/json
+      description: Get auction list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Auction List
+      tags:
+      - auction
+  /auction/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get auction detail
+      parameters:
+      - description: Auction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Auction Detail
+      tags:
+      - auction
+    put:
+      consumes:
+      - application/json
+      description: Update auction data
+      parameters:
+      - description: Auction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Auction Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AuctionUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update Auction
+      tags:
+      - auction
   /auth/login:
     post:
       consumes:

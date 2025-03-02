@@ -20,6 +20,15 @@ func NewAuctionController(auctionService interfaces.AuctionService) interfaces.A
 }
 
 // Create implements interfaces.AuctionController.
+// @Summary Create Auction
+// @Description Create new auction
+// @Tags auction
+// @Accept json
+// @Produce json
+// @Param request body dto.AuctionCreateRequest true "Auction Create Data"
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /auction [post]
 func (a *auctionController) Create(ctx *gin.Context) {
 	var auctionRequest dto.AuctionCreateRequest
 	if err := ctx.ShouldBindJSON(&auctionRequest); err != nil {
@@ -40,6 +49,15 @@ func (a *auctionController) Create(ctx *gin.Context) {
 }
 
 // Detail implements interfaces.AuctionController.
+// @Summary Auction Detail
+// @Description Get auction detail
+// @Tags auction
+// @Accept json
+// @Produce json
+// @Param id path string true "Auction ID"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /auction/{id} [get]
 func (a *auctionController) Detail(ctx *gin.Context) {
 	id := ctx.Param("id")
 	auctionID, err := strconv.ParseUint(id, 10, 64)
@@ -58,6 +76,14 @@ func (a *auctionController) Detail(ctx *gin.Context) {
 }
 
 // List implements interfaces.AuctionController.
+// @Summary Auction List
+// @Description Get auction list
+// @Tags auction
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /auction/ [get]
 func (a *auctionController) List(ctx *gin.Context) {
 	auctions, err := a.auctionService.List()
 	if err != nil {
@@ -69,6 +95,16 @@ func (a *auctionController) List(ctx *gin.Context) {
 }
 
 // Update implements interfaces.AuctionController.
+// @Summary Update Auction
+// @Description Update auction data
+// @Tags auction
+// @Accept json
+// @Produce json
+// @Param id path string true "Auction ID"
+// @Param request body dto.AuctionUpdateRequest true "Auction Update Data"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /auction/{id} [put]
 func (a *auctionController) Update(ctx *gin.Context) {
 	var auctionRequest dto.AuctionUpdateRequest
 	if err := ctx.ShouldBindJSON(&auctionRequest); err != nil {

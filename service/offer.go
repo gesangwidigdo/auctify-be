@@ -90,17 +90,46 @@ func (o *offerService) List(auctionId uint) ([]dto.OfferListResponse, error) {
 		return nil, err
 	}
 
-	offerListResponse := make([]dto.OfferListResponse, 0)
+	var wg sync.WaitGroup
+	resultChan := make(chan dto.UserOfferListResponse, len(offers))
+	
 	for _, offer := range offers {
-		offerListResponse = append(offerListResponse, dto.OfferListResponse{
-			User: dto.UserOfferListResponse{
+		wg.Add(1)
+
+		go func(offer model.Offer) {
+			defer wg.Done()
+			resultChan <- dto.UserOfferListResponse{
 				Name:     offer.User.Name,
 				Username: offer.User.Username,
-			},
-			OfferAmount: offer.OfferAmount,
-			OfferTime:   offer.OfferTime.String(),
-		})
+			}
+		}(offer)
 	}
+
+	wg.Wait()
+	close(resultChan)
+
+	offerListResponse := make([]dto.OfferListResponse, 0, len(offers))
+	idx := 0
+	for result := range resultChan {
+		offerListResponse = append(offerListResponse, dto.OfferListResponse{
+			User: result,
+			OfferAmount: offers[idx].OfferAmount,
+			OfferTime: offers[idx].OfferTime.String(),
+		})
+		idx++
+	}
+
+	// offerListResponse := make([]dto.OfferListResponse, 0)
+	// for _, offer := range offers {
+	// 	offerListResponse = append(offerListResponse, dto.OfferListResponse{
+	// 		User: dto.UserOfferListResponse{
+	// 			Name:     offer.User.Name,
+	// 			Username: offer.User.Username,
+	// 		},
+	// 		OfferAmount: offer.OfferAmount,
+	// 		OfferTime:   offer.OfferTime.String(),
+	// 	})
+	// }
 
 	return offerListResponse, nil
 }

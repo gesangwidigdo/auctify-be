@@ -5,7 +5,7 @@ import "time"
 type AuctionCreateRequest struct {
 	ItemName    string   `json:"item_name" binding:"required"`
 	Description string   `json:"description"`
-	EndTime     time.Time `json:"end_time" binding:"required"`
+	EndTime     time.Time `json:"end_time" binding:"required"` // format example: '2025-03-05T07:00:00+07:00'
 	StartPrice  float64  `json:"start_price" binding:"required"`
 }
 
