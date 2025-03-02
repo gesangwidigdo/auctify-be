@@ -1,28 +1,17 @@
 definitions:
   dto.AuctionCreateRequest:
     properties:
-      description:
-        type: string
       end_time:
         description: 'format example: ''2025-03-05T07:00:00+07:00'''
         type: string
-      item_name:
-        type: string
+      item_id:
+        type: integer
       start_price:
         type: number
     required:
     - end_time
-    - item_name
+    - item_id
     - start_price
-    type: object
-  dto.AuctionUpdateRequest:
-    properties:
-      description:
-        type: string
-      end_time:
-        type: string
-      item_name:
-        type: string
     type: object
   dto.OfferCreateRequest:
     properties:
@@ -149,38 +138,6 @@ paths:
             additionalProperties: true
             type: object
       summary: Auction Detail
-      tags:
-      - auction
-    put:
-      consumes:
-      - application/json
-      description: Update auction data
-      parameters:
-      - description: Auction ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Auction Update Data
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.AuctionUpdateRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Update Auction
       tags:
       - auction
   /auth/login:

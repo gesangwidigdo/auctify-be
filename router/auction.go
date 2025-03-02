@@ -18,5 +18,4 @@ func AuctionRouter(r *gin.RouterGroup, db *gorm.DB) {
 	r.POST("/", middleware.AuthMiddleware, auctionController.Create)
 	r.GET("/", auctionController.List)
 	r.GET("/:id", auctionController.Detail)
-	r.PUT("/:id", middleware.AuthMiddleware, auctionController.Update)
 }

@@ -17,20 +17,14 @@ type AuctionRepository interface {
 }
 
 type AuctionService interface {
-	Create(id uint, request dto.AuctionCreateRequest) (dto.AuctionCreateResponse, error)
+	Create(id uint, request dto.AuctionCreateRequest) error
 	List() ([]dto.AuctionListResponse, error)
 	Detail(id uint) (dto.AuctionDetailResponse, error)
-	Update(id uint, request dto.AuctionUpdateRequest) (error)
-	UpdateCurrentPrice(id uint, request dto.AuctionUpdateCurrentPriceRequest) (dto.AuctionUpdateCurrentPriceResponse, error)
 	StartAuctionAutoClose()
-	// CloseAuction(id uint) (error)
 }
 
 type AuctionController interface {
 	Create(ctx *gin.Context)
 	List(ctx *gin.Context)
 	Detail(ctx *gin.Context)
-	Update(ctx *gin.Context)
-	UpdateCurrentPrice(ctx *gin.Context)
-	// CloseAuction(ctx *gin.Context)
 }

@@ -126,53 +126,6 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "put": {
-                "description": "Update auction data",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auction"
-                ],
-                "summary": "Update Auction",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Auction ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Auction Update Data",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.AuctionUpdateRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
             }
         },
         "/auth/login": {
@@ -524,36 +477,19 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "end_time",
-                "item_name",
+                "item_id",
                 "start_price"
             ],
             "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "end_time": {
                     "description": "format example: '2025-03-05T07:00:00+07:00'",
                     "type": "string"
                 },
-                "item_name": {
-                    "type": "string"
+                "item_id": {
+                    "type": "integer"
                 },
                 "start_price": {
                     "type": "number"
-                }
-            }
-        },
-        "dto.AuctionUpdateRequest": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "end_time": {
-                    "type": "string"
-                },
-                "item_name": {
-                    "type": "string"
                 }
             }
         },

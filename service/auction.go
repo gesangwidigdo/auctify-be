@@ -21,46 +21,30 @@ func NewAuctionService(auctionRepo interfaces.AuctionRepository) interfaces.Auct
 }
 
 // Create implements interfaces.AuctionService.
-func (a *auctionService) Create(id uint, request dto.AuctionCreateRequest) (dto.AuctionCreateResponse, error) {
+func (a *auctionService) Create(id uint, request dto.AuctionCreateRequest) error {
 	currentTime := time.Now()
 	if request.EndTime.UTC().Before(currentTime) {
-		return dto.AuctionCreateResponse{}, errors.New("insert valid end time")
+		return errors.New("insert valid end time")
 	}
-
-	// if request.EndTime.Before(currentTime.AddDate(0, 0, 3)) {
-	// 	return dto.AuctionCreateResponse{}, errors.New("end time must be at least 3 day from now")
-	// }
 
 	if request.StartPrice <= 0 {
-		return dto.AuctionCreateResponse{}, errors.New("start price must be greater than 0")
-	}
-
-	if request.ItemName == "" {
-		return dto.AuctionCreateResponse{}, errors.New("item name must not be empty")
+		return errors.New("start price must be greater than 0")
 	}
 
 	newAuction := model.Auction{
-		ItemName:     request.ItemName,
-		Description:  request.Description,
+		ItemID:       request.ItemID,
 		StartTime:    currentTime,
 		EndTime:      request.EndTime,
 		StartPrice:   request.StartPrice,
 		CurrentPrice: request.StartPrice,
 		IsClosed:     false,
-		UserID:       id,
 	}
 
 	if err := a.auctionRepo.Create(newAuction); err != nil {
-		return dto.AuctionCreateResponse{}, err
+		return err
 	}
 
-	return dto.AuctionCreateResponse{
-		ItemName:     newAuction.ItemName,
-		Description:  newAuction.Description,
-		EndTime:      newAuction.EndTime,
-		StartPrice:   newAuction.StartPrice,
-		CurrentPrice: newAuction.CurrentPrice,
-	}, nil
+	return nil
 }
 
 // Detail implements interfaces.AuctionService.
@@ -72,8 +56,13 @@ func (a *auctionService) Detail(id uint) (dto.AuctionDetailResponse, error) {
 
 	return dto.AuctionDetailResponse{
 		ID:           auction.ID,
-		ItemName:     auction.ItemName,
-		Description:  auction.Description,
+		Seller: dto.AuctionUserResponse{
+			Username: auction.Item.User.Username,
+		},
+		Item: dto.AuctionItemResponse{
+			ItemName: auction.Item.ItemName,
+			Description: auction.Item.Description,
+		},
 		StartTime:    auction.StartTime.String(),
 		EndTime:      auction.EndTime.String(),
 		StartPrice:   auction.StartPrice,
@@ -92,7 +81,13 @@ func (a *auctionService) List() ([]dto.AuctionListResponse, error) {
 	var response []dto.AuctionListResponse
 	for _, auction := range auctions {
 		response = append(response, dto.AuctionListResponse{
-			ItemName:     auction.ItemName,
+			Seller: dto.AuctionUserResponse{
+				Username: auction.Item.User.Username,
+			},
+			Item: dto.AuctionItemResponse{
+				ItemName: auction.Item.ItemName,
+				Description: auction.Item.Description,
+			},
 			EndTime:      auction.EndTime.String(),
 			CurrentPrice: auction.CurrentPrice,
 			IsClosed:     auction.IsClosed,
@@ -100,24 +95,6 @@ func (a *auctionService) List() ([]dto.AuctionListResponse, error) {
 	}
 
 	return response, nil
-}
-
-// Update implements interfaces.AuctionService.
-func (a *auctionService) Update(id uint, request dto.AuctionUpdateRequest) error {
-	newAuction := model.Auction{
-		ItemName:    request.ItemName,
-		Description: request.Description,
-		EndTime:     request.EndTime,
-	}
-	if err := a.auctionRepo.Update(id, newAuction); err != nil {
-		return err
-	}
-	return nil
-}
-
-// UpdateCurrentPrice implements interfaces.AuctionService.
-func (a *auctionService) UpdateCurrentPrice(id uint, request dto.AuctionUpdateCurrentPriceRequest) (dto.AuctionUpdateCurrentPriceResponse, error) {
-	panic("unimplemented")
 }
 
 // CloseAuction implements interfaces.AuctionService.

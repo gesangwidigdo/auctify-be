@@ -3,42 +3,41 @@ package dto
 import "time"
 
 type AuctionCreateRequest struct {
-	ItemName    string   `json:"item_name" binding:"required"`
-	Description string   `json:"description"`
-	EndTime     time.Time `json:"end_time" binding:"required"` // format example: '2025-03-05T07:00:00+07:00'
-	StartPrice  float64  `json:"start_price" binding:"required"`
+	ItemID     uint      `json:"item_id" binding:"required"`
+	EndTime    time.Time `json:"end_time" binding:"required"` // format example: '2025-03-05T07:00:00+07:00'
+	StartPrice float64   `json:"start_price" binding:"required"`
 }
 
-type AuctionCreateResponse struct {
-	ItemName     string   `json:"item_name"`
-	Description  string   `json:"description"`
-	EndTime      time.Time `json:"end_time"`
-	StartPrice   float64  `json:"start_price"`
-	CurrentPrice float64  `json:"current_price"`
+type AuctionItemResponse struct {
+	ItemName    string `json:"item_name"`
+	Description string `json:"description"`
+}
+
+type AuctionUserResponse struct {
+	Username string `json:"username"`
 }
 
 type AuctionDetailResponse struct {
-	ID           uint    `json:"id"`
-	ItemName     string  `json:"item_name"`
-	Description  string  `json:"description"`
-	StartTime    string  `json:"start_time"`
-	EndTime      string  `json:"end_time"`
-	StartPrice   float64 `json:"start_price"`
-	CurrentPrice float64 `json:"current_price"`
-	IsClosed     bool    `json:"is_closed"`
+	ID           uint                `json:"id"`
+	Item         AuctionItemResponse `json:"item"`
+	Seller       AuctionUserResponse `json:"seller"`
+	StartTime    string              `json:"start_time"`
+	EndTime      string              `json:"end_time"`
+	StartPrice   float64             `json:"start_price"`
+	CurrentPrice float64             `json:"current_price"`
+	IsClosed     bool                `json:"is_closed"`
 }
 
 type AuctionListResponse struct {
-	ItemName     string  `json:"item_name"`
-	EndTime      string  `json:"end_time"`
-	CurrentPrice float64 `json:"current_price"`
-	IsClosed     bool    `json:"is_closed"`
+	Item         AuctionItemResponse `json:"item"`
+	Seller       AuctionUserResponse `json:"seller"`
+	EndTime      string              `json:"end_time"`
+	CurrentPrice float64             `json:"current_price"`
+	IsClosed     bool                `json:"is_closed"`
 }
 
 type AuctionUpdateRequest struct {
-	ItemName    string `json:"item_name"`
-	Description string `json:"description"`
-	EndTime     time.Time `json:"end_time"`
+	EndTime time.Time `json:"end_time"`
 }
 
 type AuctionUpdateCurrentPriceRequest struct {

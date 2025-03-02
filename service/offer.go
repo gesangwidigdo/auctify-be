@@ -27,7 +27,7 @@ func (o *offerService) Create(userId uint, offer dto.OfferCreateRequest) (dto.Of
 		return dto.OfferCreateResponse{}, err
 	}
 
-	if auction.UserID == userId {
+	if auction.Item.UserID == userId {
 		return dto.OfferCreateResponse{}, errors.New("cannot make an offer on your own auction")
 	}
 

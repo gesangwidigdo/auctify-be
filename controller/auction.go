@@ -40,12 +40,11 @@ func (a *auctionController) Create(ctx *gin.Context) {
 		utils.FailResponse(ctx, statCode, err.Error())
 		return
 	}
-	auctionResponse, err := a.auctionService.Create(id, auctionRequest)
-	if err != nil {
+	if err := a.auctionService.Create(id, auctionRequest); err != nil {
 		utils.FailResponse(ctx, 400, err.Error())
 		return
 	}
-	utils.SuccessResponse(ctx, 201, auctionResponse)
+	utils.SuccessResponse(ctx, 201, "success create auction")
 }
 
 // Detail implements interfaces.AuctionController.
@@ -93,47 +92,3 @@ func (a *auctionController) List(ctx *gin.Context) {
 
 	utils.SuccessResponse(ctx, 200, auctions)
 }
-
-// Update implements interfaces.AuctionController.
-// @Summary Update Auction
-// @Description Update auction data
-// @Tags auction
-// @Accept json
-// @Produce json
-// @Param id path string true "Auction ID"
-// @Param request body dto.AuctionUpdateRequest true "Auction Update Data"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Router /auction/{id} [put]
-func (a *auctionController) Update(ctx *gin.Context) {
-	var auctionRequest dto.AuctionUpdateRequest
-	if err := ctx.ShouldBindJSON(&auctionRequest); err != nil {
-		utils.FailResponse(ctx, 400, err.Error())
-		return
-	}
-
-	id := ctx.Param("id")
-	auctionID, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		utils.FailResponse(ctx, 400, err.Error())
-		return
-	}
-
-	err = a.auctionService.Update(uint(auctionID), auctionRequest)
-	if err != nil {
-		utils.FailResponse(ctx, 400, err.Error())
-		return
-	}
-
-	utils.SuccessResponse(ctx, 200, "update success")
-}
-
-// UpdateCurrentPrice implements interfaces.AuctionController.
-func (a *auctionController) UpdateCurrentPrice(ctx *gin.Context) {
-	panic("unimplemented")
-}
-
-// // CloseAuction implements interfaces.AuctionController.
-// func (a *auctionController) CloseAuction(ctx *gin.Context) {
-// 	panic("unimplemented")
-// }
