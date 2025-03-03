@@ -16,6 +16,6 @@ type Auction struct {
 	ItemID       uint      `json:"item_id" gorm:"not null;unique"`
 
 	// Relationship
-	Item   Item    `json:"item"`
+	Item   Item    `json:"item" gorm:"foreignKey:ItemID"`
 	Offers []Offer `json:"offers"`
 }
