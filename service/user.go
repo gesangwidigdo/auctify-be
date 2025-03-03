@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/gesangwidigdo/auctify-be/dto"
 	"github.com/gesangwidigdo/auctify-be/interfaces"
 	"github.com/gesangwidigdo/auctify-be/model"
@@ -42,20 +44,24 @@ func (u *userService) Detail(id uint) (dto.UserDetailResponse, error) {
 }
 
 // List implements interfaces.UserService.
-func (u *userService) List() ([]dto.UserListResponse, error) {
-	users, err := u.userRepository.List()
-	if err != nil {
-		return nil, err
+func (u *userService) List(role string) ([]dto.UserListResponse, error) {
+	if role == "admin" {
+		users, err := u.userRepository.List()
+		if err != nil {
+			return nil, err
+		}
+		var response []dto.UserListResponse
+		for _, user := range users {
+			response = append(response, dto.UserListResponse{
+				ID:       user.ID,
+				Name:     user.Name,
+				Username: user.Username,
+				Role:     user.Role,
+			})
+		}
+		return response, nil
 	}
-	var response []dto.UserListResponse
-	for _, user := range users {
-		response = append(response, dto.UserListResponse{
-			ID:       user.ID,
-			Name:     user.Name,
-			Username: user.Username,
-		})
-	}
-	return response, nil
+	return nil, errors.New("unauthorized: user cannot access list of user")
 }
 
 // Update implements interfaces.UserService.

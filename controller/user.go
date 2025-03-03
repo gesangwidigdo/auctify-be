@@ -77,9 +77,22 @@ func (u *userController) Detail(ctx *gin.Context) {
 // @Failure 400 {object} map[string]interface{}
 // @Router /user [get]
 func (u *userController) List(ctx *gin.Context) {
-	users, err := u.userService.List()
+	role, ok := ctx.Get("role")
+	if !ok {
+		utils.FailResponse(ctx, 400, "no role found")
+		return
+	}
+
+	roleStr, ok := role.(string)
+	if !ok {
+		utils.FailResponse(ctx, 400, "role is not a string")
+		return
+	}
+
+	users, err := u.userService.List(roleStr)
 	if err != nil {
 		utils.FailResponse(ctx, 400, err.Error())
+		return
 	}
 
 	utils.SuccessResponse(ctx, 200, users)

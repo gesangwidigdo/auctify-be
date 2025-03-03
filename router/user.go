@@ -15,7 +15,7 @@ func UserRoute(r *gin.RouterGroup, db *gorm.DB) {
 	var userService interfaces.UserService = service.NewUserService(userRepo)
 	var userController interfaces.UserController = controller.NewUserController(userService)
 
-	r.GET("/", userController.List)
+	r.GET("/", middleware.AuthMiddleware, userController.List)
 	r.PUT("/", middleware.AuthMiddleware, userController.Update)
 	r.GET("/me", middleware.AuthMiddleware, userController.Detail)
 	r.DELETE("/", middleware.AuthMiddleware, userController.Delete)

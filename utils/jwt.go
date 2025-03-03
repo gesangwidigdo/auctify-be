@@ -13,6 +13,7 @@ func CreateToken(user model.User) (string, error) {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id": user.ID,
 		"sub": user.Username,
+		"role": user.Role,
 		"iss": "auctify",
 		"exp": time.Now().Add(time.Hour * 72).Unix(),
 		"iat": time.Now().Unix(),
@@ -31,7 +32,7 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		
+
 		return []byte(secretKey), nil
 	})
 	if err != nil {

@@ -18,12 +18,12 @@ type UserRepository interface {
 type UserService interface {
 	Update(id uint, user dto.UserUpdateRequest) (dto.UserUpdateResponse, error)
 	Delete(id uint) (dto.UserDeleteResponse, error)
-	List() ([]dto.UserListResponse, error)
+	List(role string) ([]dto.UserListResponse, error)
 	Detail(id uint) (dto.UserDetailResponse, error)
 }
 
 type UserController interface {
-	Update(ctx *gin.Context) 
+	Update(ctx *gin.Context)
 	Delete(ctx *gin.Context)
 	List(ctx *gin.Context)
 	Detail(ctx *gin.Context)

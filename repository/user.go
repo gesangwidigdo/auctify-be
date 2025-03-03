@@ -19,7 +19,7 @@ func NewUserRepository(db *gorm.DB) interfaces.UserRepository {
 // Login implements interfaces.UserRepository.
 func (u *userRepository) GetByUsername(username string) (model.User, error) {
 	var user model.User
-	if err := u.db.Raw("SELECT id, username, password FROM users WHERE username = ? AND deleted_at IS NULL", username).Take(&user).Error; err != nil {
+	if err := u.db.Raw("SELECT id, username, password, role FROM users WHERE username = ? AND deleted_at IS NULL", username).Take(&user).Error; err != nil {
 		return model.User{}, err
 	}
 	return user, nil
@@ -53,7 +53,7 @@ func (u *userRepository) Detail(id uint) (model.User, error) {
 // List implements interfaces.UserRepository.
 func (u *userRepository) List() ([]model.User, error) {
 	var users []model.User
-	if err := u.db.Raw("SELECT id, name, username FROM users WHERE deleted_at IS NULL").Scan(&users).Error; err != nil {
+	if err := u.db.Raw("SELECT id, name, username, role FROM users WHERE deleted_at IS NULL").Scan(&users).Error; err != nil {
 		return nil, err
 	}
 	return users, nil
