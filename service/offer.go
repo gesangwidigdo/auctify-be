@@ -27,6 +27,11 @@ func (o *offerService) Create(userId uint, offer dto.OfferCreateRequest) (dto.Of
 		return dto.OfferCreateResponse{}, err
 	}
 
+	if auction.EndTime.Before(time.Now()) {
+		o.auctionRepo.CloseAuction(auction.ID)
+		return dto.OfferCreateResponse{}, errors.New("auction has been closed")
+	}
+
 	if auction.Item.UserID == userId {
 		return dto.OfferCreateResponse{}, errors.New("cannot make an offer on your own auction")
 	}
