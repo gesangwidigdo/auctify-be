@@ -17,6 +17,9 @@ func Router(r *gin.Engine, db *gorm.DB) {
 	userRoutes := r.Group("/api/user")
 	UserRoute(userRoutes, db)
 
+	itemRoutes := r.Group("/api/item")
+	ItemRouter(itemRoutes, db)
+
 	auctionRoutes := r.Group("/api/auction")
 	AuctionRouter(auctionRoutes, db)
 

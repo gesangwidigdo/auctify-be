@@ -13,6 +13,22 @@ definitions:
     - item_id
     - start_price
     type: object
+  dto.ItemCreateRequest:
+    properties:
+      description:
+        type: string
+      item_name:
+        type: string
+    required:
+    - item_name
+    type: object
+  dto.ItemUpdateRequest:
+    properties:
+      description:
+        type: string
+      item_name:
+        type: string
+    type: object
   dto.OfferCreateRequest:
     properties:
       auction_id:
@@ -223,6 +239,139 @@ paths:
       summary: Register user baru
       tags:
       - auth
+  /item:
+    get:
+      consumes:
+      - application/json
+      description: Get item list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: List Item
+      tags:
+      - item
+    post:
+      consumes:
+      - application/json
+      description: Create new item
+      parameters:
+      - description: Item Create Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ItemCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create Item
+      tags:
+      - item
+  /item/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete item data
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete Item
+      tags:
+      - item
+    get:
+      consumes:
+      - application/json
+      description: get item detail data
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Item Detail
+      tags:
+      - item
+    put:
+      consumes:
+      - application/json
+      description: Update item data
+      parameters:
+      - description: Item Data
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Item Update Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ItemUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update Item
+      tags:
+      - item
   /offer:
     post:
       consumes:
