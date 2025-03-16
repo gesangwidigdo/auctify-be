@@ -1,36 +1,49 @@
 version: '3.8'
 
 services:
-  db:
-    image: mysql:8
-    container_name: mysql_db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: auctify
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-
   app:
-    build: .
-    container_name: auctify_be
-    depends_on:
-      - db
+    container_name: auctify-be
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: auctify-be
+    ports:
+      - 7947:7947
     environment:
       - PORT=7947
-      - DB_HOST=db
+      - DB_HOST=mysql
       - DB_USER=root
       - DB_PASS=root
       - DB_NAME=auctify
       - DB_PORT=3306
       - DB_URL=${DB_USER}:${DB_PASS}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}?charset=utf8mb4&parseTime=True&loc=Local
       - SECRET_KEY=1d0n7kn0wWh475h0uLd1Pu7H3r3
-    ports:
-      - "7947:7947"
+    depends_on:
+      - mysql:
+          condition: service_healthy
+    networks:
+      - go-network
 
+  mysql:
+    container_name: auctify_mysql
+    image: mysql:8.0.3
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - go-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
 volumes:
-  db_data: {}
+  dbdata:
+
+networks:
+  go-network:
+    driver: bridge

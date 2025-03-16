@@ -1,13 +1,15 @@
-FROM golang:1.22.5 as builder
-WORKDIR /app
+FROM golang:alpine3.20 as builder
+
+WORKDIR /build
+
 COPY go.mod go.sum ./
 RUN go mod tidy
-COPY . .
-RUN go build -o auctify-be .
 
-FROM alpine:latest
-WORKDIR /root/
-RUN apk add --no-cache mysql-client
-COPY --from=builder /app/auctify-be .
-EXPOSE 7947
-CMD [ "./auctify-be" ]
+COPY . .
+RUN go build -o /app .
+
+FROM alpine:3.20
+
+COPY --from=builder /app /app
+
+CMD [ "/app" ]
