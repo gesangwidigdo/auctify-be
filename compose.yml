@@ -34,6 +34,7 @@ services:
       - MYSQL_PASSWORD=arph
     volumes:
       - dbdata:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - go-network
     healthcheck:
