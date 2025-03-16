@@ -18,9 +18,11 @@ services:
       - DB_PORT=3306
       - DB_URL=${DB_USER}:${DB_PASS}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}?charset=utf8mb4&parseTime=True&loc=Local
       - SECRET_KEY=1d0n7kn0wWh475h0uLd1Pu7H3r3
+    env_file:
+      - .env
     depends_on:
-      - mysql:
-          condition: service_healthy
+      mysql:
+        condition: service_healthy
     networks:
       - go-network
 
@@ -29,17 +31,17 @@ services:
     image: mysql:8.0.3
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
+      - MYSQL_USER=arph
+      - MYSQL_PASSWORD=arph
     volumes:
       - dbdata:/var/lib/mysql
     networks:
       - go-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysql", "-h", "localhost", "-uroot", "-proot", "-e", "SELECT 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
   
 volumes:
   dbdata:
