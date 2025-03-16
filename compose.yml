@@ -12,8 +12,8 @@ services:
     environment:
       - PORT=7947
       - DB_HOST=mysql
-      - DB_USER=root
-      - DB_PASS=root
+      - DB_USER=arph
+      - DB_PASS=arph
       - DB_NAME=auctify
       - DB_PORT=3306
       - DB_URL=${DB_USER}:${DB_PASS}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}?charset=utf8mb4&parseTime=True&loc=Local
@@ -34,6 +34,7 @@ services:
       - MYSQL_PASSWORD=arph
     volumes:
       - dbdata:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - go-network
     healthcheck:
