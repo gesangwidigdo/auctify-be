@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/gesangwidigdo/auctify-be/dto"
 	"github.com/gesangwidigdo/auctify-be/interfaces"
 	"github.com/gesangwidigdo/auctify-be/utils"
@@ -68,6 +70,7 @@ func (a *authController) Login(ctx *gin.Context) {
 		return
 	}
 
+	ctx.SetSameSite(http.SameSiteNoneMode)
 	ctx.SetCookie("token", loginResponse.Token, 3600*24, "/", "localhost", false, true)
 
 	utils.SuccessResponse(ctx, 200, "login success")
